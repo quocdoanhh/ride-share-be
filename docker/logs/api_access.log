@@ -3,3 +3,53 @@
 192.168.155.1 - - [19/Jun/2025:02:29:54 +0000] "GET / HTTP/1.1" 200 11364 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36" "-" 0.107
 192.168.155.1 - - [19/Jun/2025:02:29:54 +0000] "GET /favicon.ico HTTP/1.1" 200 0 "http://localhost/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36" "-" 0.000
 192.168.155.1 - - [19/Jun/2025:03:13:57 +0000] "GET / HTTP/1.1" 200 11364 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36" "-" 0.236
+192.168.155.1 - - [19/Jun/2025:06:23:37 +0000] "POST /login HTTP/1.1" 404 2311 "-" "PostmanRuntime/7.44.0" "-" 0.409
+192.168.155.1 - - [19/Jun/2025:06:23:58 +0000] "POST /api/v1/login HTTP/1.1" 404 2311 "-" "PostmanRuntime/7.44.0" "-" 0.179
+192.168.155.1 - - [19/Jun/2025:06:23:59 +0000] "POST /api/v1/login HTTP/1.1" 404 2311 "-" "PostmanRuntime/7.44.0" "-" 0.121
+192.168.155.1 - - [19/Jun/2025:06:27:12 +0000] "POST /api/v1/login HTTP/1.1" 500 276620 "-" "PostmanRuntime/7.44.0" "-" 0.708
+192.168.155.1 - - [19/Jun/2025:06:28:19 +0000] "POST /api/v1/login HTTP/1.1" 500 305075 "-" "PostmanRuntime/7.44.0" "-" 0.656
+192.168.155.1 - - [19/Jun/2025:06:38:42 +0000] "POST /api/v1/login HTTP/1.1" 500 307022 "-" "PostmanRuntime/7.44.0" "-" 0.840
+192.168.155.1 - - [19/Jun/2025:06:40:18 +0000] "POST /api/v1/login HTTP/1.1" 500 307030 "-" "PostmanRuntime/7.44.0" "-" 1.059
+192.168.155.1 - - [19/Jun/2025:06:42:22 +0000] "POST /api/v1/login HTTP/1.1" 200 61 "-" "PostmanRuntime/7.44.0" "-" 1.533
+192.168.155.1 - - [19/Jun/2025:06:46:44 +0000] "GET / HTTP/1.1" 200 11364 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36" "-" 0.605
+192.168.155.1 - - [19/Jun/2025:06:46:45 +0000] "GET /favicon.ico HTTP/1.1" 200 0 "http://api.localhost/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36" "-" 0.000
+192.168.155.1 - - [19/Jun/2025:06:48:59 +0000] "POST /api/v1/login HTTP/1.1" 200 61 "-" "PostmanRuntime/7.44.0" "-" 1.571
+192.168.155.1 - - [19/Jun/2025:06:50:05 +0000] "POST /api/v1/login/verify HTTP/1.1" 302 322 "-" "PostmanRuntime/7.44.0" "-" 0.320
+192.168.155.1 - - [19/Jun/2025:06:50:05 +0000] "GET / HTTP/1.1" 200 11364 "http://localhost/api/v1/login/verify" "PostmanRuntime/7.44.0" "-" 0.109
+192.168.155.1 - - [19/Jun/2025:06:52:53 +0000] "POST /api/v1/login/verify HTTP/1.1" 302 322 "-" "PostmanRuntime/7.44.0" "-" 0.335
+192.168.155.1 - - [19/Jun/2025:06:52:54 +0000] "GET / HTTP/1.1" 200 11364 "http://localhost/api/v1/login/verify" "PostmanRuntime/7.44.0" "-" 0.121
+192.168.155.1 - - [19/Jun/2025:06:52:56 +0000] "POST /api/v1/login/verify HTTP/1.1" 302 322 "-" "PostmanRuntime/7.44.0" "-" 0.161
+192.168.155.1 - - [19/Jun/2025:06:52:56 +0000] "GET / HTTP/1.1" 200 11364 "http://localhost/api/v1/login/verify" "PostmanRuntime/7.44.0" "-" 0.110
+192.168.155.1 - - [19/Jun/2025:06:53:21 +0000] "POST /api/v1/login/verify HTTP/1.1" 302 322 "-" "PostmanRuntime/7.44.0" "-" 0.147
+192.168.155.1 - - [19/Jun/2025:06:53:21 +0000] "GET / HTTP/1.1" 200 11364 "http://localhost/api/v1/login/verify" "PostmanRuntime/7.44.0" "-" 0.136
+192.168.155.1 - - [19/Jun/2025:06:54:01 +0000] "POST /api/v1/login/verify HTTP/1.1" 302 322 "-" "PostmanRuntime/7.44.0" "-" 0.181
+192.168.155.1 - - [19/Jun/2025:06:54:01 +0000] "GET / HTTP/1.1" 200 11364 "http://localhost/api/v1/login/verify" "PostmanRuntime/7.44.0" "-" 0.116
+192.168.155.1 - - [19/Jun/2025:06:54:17 +0000] "POST /api/v1/login/verify HTTP/1.1" 302 322 "-" "PostmanRuntime/7.44.0" "-" 0.236
+192.168.155.1 - - [19/Jun/2025:06:54:18 +0000] "GET / HTTP/1.1" 200 11364 "http://localhost/api/v1/login/verify" "PostmanRuntime/7.44.0" "-" 0.105
+192.168.155.1 - - [19/Jun/2025:06:54:31 +0000] "POST /api/v1/login/verify HTTP/1.1" 500 16836 "-" "PostmanRuntime/7.44.0" "-" 0.178
+192.168.155.1 - - [19/Jun/2025:06:55:19 +0000] "POST /api/v1/login/verify HTTP/1.1" 500 16541 "-" "PostmanRuntime/7.44.0" "-" 0.174
+192.168.155.1 - - [19/Jun/2025:06:56:49 +0000] "POST /api/v1/login/verify HTTP/1.1" 302 322 "-" "PostmanRuntime/7.44.0" "-" 0.327
+192.168.155.1 - - [19/Jun/2025:06:56:50 +0000] "GET / HTTP/1.1" 200 11364 "http://localhost/api/v1/login/verify" "PostmanRuntime/7.44.0" "-" 0.204
+192.168.155.1 - - [19/Jun/2025:06:57:11 +0000] "POST /api/v1/login/verify HTTP/1.1" 302 322 "-" "PostmanRuntime/7.44.0" "-" 0.158
+192.168.155.1 - - [19/Jun/2025:06:57:11 +0000] "GET / HTTP/1.1" 200 11364 "http://localhost/api/v1/login/verify" "PostmanRuntime/7.44.0" "-" 0.154
+192.168.155.1 - - [19/Jun/2025:06:57:13 +0000] "POST /api/v1/login/verify HTTP/1.1" 302 322 "-" "PostmanRuntime/7.44.0" "-" 0.147
+192.168.155.1 - - [19/Jun/2025:06:57:13 +0000] "GET / HTTP/1.1" 200 11364 "http://localhost/api/v1/login/verify" "PostmanRuntime/7.44.0" "-" 0.216
+192.168.155.1 - - [19/Jun/2025:07:00:00 +0000] "POST /api/v1/login/verify HTTP/1.1" 302 322 "-" "PostmanRuntime/7.44.0" "-" 0.260
+192.168.155.1 - - [19/Jun/2025:07:00:00 +0000] "GET / HTTP/1.1" 200 11364 "http://localhost/api/v1/login/verify" "PostmanRuntime/7.44.0" "-" 0.121
+192.168.155.1 - - [19/Jun/2025:07:03:39 +0000] "POST /api/v1/login/verify HTTP/1.1" 422 102 "-" "curl/8.7.1" "-" 0.290
+192.168.155.1 - - [19/Jun/2025:07:04:12 +0000] "POST /api/v1/login/verify HTTP/1.1" 422 102 "-" "curl/8.7.1" "-" 0.274
+192.168.155.1 - - [19/Jun/2025:07:04:21 +0000] "POST /api/v1/login/verify HTTP/1.1" 500 281955 "-" "PostmanRuntime/7.44.0" "-" 0.471
+192.168.155.1 - - [19/Jun/2025:07:04:36 +0000] "POST /api/v1/login/verify HTTP/1.1" 500 10988 "-" "curl/8.7.1" "-" 0.267
+192.168.155.1 - - [19/Jun/2025:07:06:26 +0000] "POST /api/v1/login/verify HTTP/1.1" 500 317950 "-" "PostmanRuntime/7.44.0" "-" 0.723
+192.168.155.1 - - [19/Jun/2025:07:07:24 +0000] "POST /api/v1/login/verify HTTP/1.1" 200 73 "-" "PostmanRuntime/7.44.0" "-" 0.356
+192.168.155.1 - - [19/Jun/2025:07:13:01 +0000] "GET /api/v1/me HTTP/1.1" 500 273609 "-" "PostmanRuntime/7.44.0" "-" 0.693
+192.168.155.1 - - [19/Jun/2025:07:15:03 +0000] "GET /api/v1/me HTTP/1.1" 500 273617 "-" "PostmanRuntime/7.44.0" "-" 0.578
+192.168.155.1 - - [19/Jun/2025:07:15:36 +0000] "GET /api/v1/me HTTP/1.1" 500 273616 "-" "PostmanRuntime/7.44.0" "-" 0.601
+192.168.155.1 - - [19/Jun/2025:07:17:27 +0000] "GET /api/v1/me HTTP/1.1" 302 374 "-" "PostmanRuntime/7.44.0" "-" 0.372
+192.168.155.1 - - [19/Jun/2025:07:17:27 +0000] "GET /api/v1/login HTTP/1.1" 405 252123 "http://localhost/api/v1/me" "PostmanRuntime/7.44.0" "-" 0.224
+192.168.155.1 - - [19/Jun/2025:07:18:34 +0000] "GET /api/v1/me HTTP/1.1" 302 374 "-" "PostmanRuntime/7.44.0" "-" 0.388
+192.168.155.1 - - [19/Jun/2025:07:18:35 +0000] "GET /api/v1/login HTTP/1.1" 405 252115 "http://localhost/api/v1/me" "PostmanRuntime/7.44.0" "-" 0.311
+192.168.155.1 - - [19/Jun/2025:07:19:04 +0000] "POST /api/v1/login/verify HTTP/1.1" 200 73 "-" "PostmanRuntime/7.44.0" "-" 0.238
+192.168.155.1 - - [19/Jun/2025:07:19:38 +0000] "POST /api/v1/login/verify HTTP/1.1" 200 73 "-" "PostmanRuntime/7.44.0" "-" 0.362
+192.168.155.1 - - [19/Jun/2025:07:19:58 +0000] "POST /api/v1/login/verify HTTP/1.1" 200 73 "-" "PostmanRuntime/7.44.0" "-" 0.427
+192.168.155.1 - - [19/Jun/2025:07:20:03 +0000] "GET /api/v1/me HTTP/1.1" 200 147 "-" "PostmanRuntime/7.44.0" "-" 0.391
