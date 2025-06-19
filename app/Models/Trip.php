@@ -18,6 +18,14 @@ class Trip extends Model
         'driver_location',
     ];
 
+    protected $casts = [
+        'origin' => 'array',
+        'destination' => 'array',
+        'driver_location' => 'array',
+        'is_started' => 'boolean',
+        'is_completed' => 'boolean',
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

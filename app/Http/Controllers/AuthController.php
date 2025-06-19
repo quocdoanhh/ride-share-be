@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\UserService;
 use App\Http\Requests\LoginRequest;
 use App\Notifications\LoginVerification;
 use App\Http\Requests\VerifyLoginRequest;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Routing\Controller;
+use App\Services\AuthService;
 
 class AuthController extends Controller
 {
-    public function __construct(private UserService $userService)
+    public function __construct(private AuthService $userService)
     {
     }
 

@@ -10,16 +10,8 @@ class UserService
     {
     }
 
-    public function login(array $data)
+    public function updateUser(array $data)
     {
-        return $this->userRepository->firstOrCreateByPhone($data['phone']);
-    }
-
-    public function verifyLogin(array $data)
-    {
-        return $this->userRepository->whereFirst([
-            'phone' => $data['phone'],
-            'login_verification_code' => $data['code'],
-        ]);
+        return $this->userRepository->update(auth()->user()->id, $data);
     }
 }
