@@ -2,6 +2,10 @@
 
 namespace App\Services;
 
+use App\Events\TripAccepted;
+use App\Events\TripCompleted;
+use App\Events\TripLocationUpdated;
+use App\Events\TripStarted;
 use App\Repositories\TripRepository;
 
 class TripService
@@ -44,6 +48,8 @@ class TripService
             ...$data,
         ]);
 
+        TripAccepted::dispatch($trip, auth()->user());
+
         return $trip->load('driver.user');
     }
 
@@ -53,6 +59,8 @@ class TripService
         $trip->update([
             'is_started' => true,
         ]);
+
+        TripStarted::dispatch($trip, auth()->user());
 
         return $trip->load('driver.user');
     }
@@ -64,6 +72,8 @@ class TripService
             'is_completed' => true,
         ]);
 
+        TripCompleted::dispatch($trip, auth()->user());
+
         return $trip->load('driver.user');
     }
 
@@ -71,6 +81,8 @@ class TripService
     {
         $trip = $this->tripRepository->findOrFail($id);
         $trip->update($data);
+
+        TripLocationUpdated::dispatch($trip, auth()->user());
 
         return $trip->load('driver.user');
     }

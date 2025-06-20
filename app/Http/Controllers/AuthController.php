@@ -41,7 +41,7 @@ class AuthController extends Controller
             ], Response::HTTP_UNAUTHORIZED);
         }
 
-        // $user->update(['login_verification_code' => null]);
+        $user->update(['login_verification_code' => null]);
 
         return response()->json([
             'token' => $user->createToken($request->code)->plainTextToken
