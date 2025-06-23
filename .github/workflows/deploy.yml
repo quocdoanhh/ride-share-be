@@ -1,9 +1,10 @@
 name: Deploy Laravel Dev (Docker)
 
 on:
+  workflow_dispatch:
   push:
     branches:
-      - develop
+      - main
 
 env:
   ENV_NAME: dev
