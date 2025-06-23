@@ -35,7 +35,7 @@ class TripLocationUpdated
     public function broadcastOn(): array
     {
         return [
-            new Channel('passenger_' . $this->user->id),
+            new Channel('driver'),
         ];
     }
 }

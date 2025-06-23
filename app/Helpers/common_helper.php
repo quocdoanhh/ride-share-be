@@ -10,7 +10,7 @@ if (!function_exists('generate_random_string')) {
      */
     function generate_random_string($length = 6)
     {
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $characters = '0123456789';
         $randomString = '';
 
         for ($i = 0; $i < $length; $i++) {
