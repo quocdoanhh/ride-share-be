@@ -1,0 +1,54 @@
+name: Deploy Laravel Dev (Docker)
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - develop
+
+env:
+  ENV_NAME: dev
+  HOST: ${{ secrets.DEV_HOST }}
+  USERNAME: ${{ secrets.DEV_USERNAME }}
+  KEY: ${{ secrets.DEV_KEY }}
+  PORT: ${{ secrets.DEV_PORT }}
+
+jobs:
+  deploy:
+    name: Deploy Laravel
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: SSH Deploy to EC2 (Laravel Docker)
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ env.HOST }}
+          username: ${{ env.USERNAME }}
+          key: ${{ env.KEY }}
+          port: ${{ env.PORT }}
+          script: |
+            set -e
+            cd /home/ec2-user/ride-share-be
+
+            echo "🔄 Pulling latest code..."
+            git pull origin main
+
+            echo "⚙️ Running commands..."
+            docker exec rs_app composer install --no-dev --optimize-autoloader
+            docker exec rs_app php artisan migrate --force
+            docker exec rs_app php artisan config:cache
+            docker exec rs_app php artisan route:cache
+            docker exec rs_app php artisan view:cache
+
+            echo "🔐 Fixing permissions..."
+            docker exec rs_app chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+            docker exec rs_app chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+
+            echo "✅ Deploy completed!"
