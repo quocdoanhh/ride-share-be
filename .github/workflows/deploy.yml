@@ -40,7 +40,7 @@ jobs:
             git pull origin main
 
             echo "🧪 Running unit tests..."
-            docker exec rs_app php artisan test --no-interaction --env=testing
+            docker exec rs_app php artisan test --env=testing
 
             echo "📦 Installing Composer dependencies..."
             docker exec rs_app composer install --no-dev --optimize-autoloader
