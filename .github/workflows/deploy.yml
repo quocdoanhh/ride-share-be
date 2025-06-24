@@ -1,4 +1,4 @@
-name: Deploy Laravel Dev (Docker)
+name: Deploy Laravel
 
 on:
   workflow_dispatch:
@@ -7,7 +7,6 @@ on:
       - main
 
 env:
-  ENV_NAME: dev
   HOST: ${{ secrets.DEV_HOST }}
   USERNAME: ${{ secrets.DEV_USERNAME }}
   KEY: ${{ secrets.DEV_KEY }}
@@ -26,7 +25,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: SSH Deploy to EC2 (Laravel Docker)
+      - name: SSH to EC2
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ env.HOST }}
@@ -40,7 +39,10 @@ jobs:
             echo "🔄 Pulling latest code..."
             git pull origin main
 
-            echo "⚙️ Running commands..."
+            echo "🧪 Running unit tests..."
+            docker exec rs_app php artisan test --no-interaction --env=testing
+
+            echo "📦 Installing Composer dependencies..."
             docker exec rs_app composer install --no-dev --optimize-autoloader
             docker exec rs_app php artisan migrate --force
             docker exec rs_app php artisan config:cache
