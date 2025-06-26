@@ -3,7 +3,7 @@
 namespace App\Patterns\Decorator\User;
 
 /**
- * Abstract Decorator - Base class cho tất cả user decorators
+ * Abstract Decorator
  */
 abstract class UserDecorator implements UserInterface
 {
@@ -52,7 +52,7 @@ class DriverDecorator extends UserDecorator
     {
         $info = parent::getInfo();
         $info['type'] = 'driver';
-        $info['role'] = 'Tài xế';
+        $info['role'] = 'Driver';
         $info['permissions'] = array_merge($info['permissions'], $this->driverPermissions);
         return $info;
     }
@@ -69,7 +69,7 @@ class DriverDecorator extends UserDecorator
 
     public function getDisplayName(): string
     {
-        return parent::getDisplayName() . ' (Tài xế)';
+        return parent::getDisplayName() . ' (Driver)';
     }
 }
 
@@ -89,7 +89,7 @@ class PassengerDecorator extends UserDecorator
     {
         $info = parent::getInfo();
         $info['type'] = 'passenger';
-        $info['role'] = 'Hành khách';
+        $info['role'] = 'Passenger';
         $info['permissions'] = array_merge($info['permissions'], $this->passengerPermissions);
         return $info;
     }
@@ -106,7 +106,7 @@ class PassengerDecorator extends UserDecorator
 
     public function getDisplayName(): string
     {
-        return parent::getDisplayName() . ' (Hành khách)';
+        return parent::getDisplayName() . ' (Passenger)';
     }
 }
 
@@ -127,7 +127,7 @@ class AdminDecorator extends UserDecorator
     {
         $info = parent::getInfo();
         $info['type'] = 'admin';
-        $info['role'] = 'Quản trị viên';
+        $info['role'] = 'Admin';
         $info['permissions'] = array_merge($info['permissions'], $this->adminPermissions);
         return $info;
     }

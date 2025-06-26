@@ -10,7 +10,7 @@ class DriverService
         $drivers = [
             [
                 'id' => 1,
-                'name' => 'Tài xế Nguyễn Văn A',
+                'name' => 'Driver A',
                 'phone' => '0901234567',
                 'vehicle_type' => 'car',
                 'rating' => 4.8,
@@ -18,7 +18,7 @@ class DriverService
             ],
             [
                 'id' => 2,
-                'name' => 'Tài xế Trần Thị B',
+                'name' => 'Driver B',
                 'phone' => '0901234568',
                 'vehicle_type' => 'car',
                 'rating' => 4.6,
@@ -41,7 +41,7 @@ class DriverService
         // Simulate getting driver info
         return [
             'id' => $driverId,
-            'name' => 'Tài xế ' . $driverId,
+            'name' => 'Driver ' . $driverId,
             'phone' => '090123456' . $driverId,
             'vehicle_type' => 'car',
             'rating' => 4.5 + (rand(0, 5) / 10),

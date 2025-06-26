@@ -9,9 +9,6 @@ use App\Patterns\ThreadPool\Tasks\FareCalculationTask;
 use App\Patterns\ThreadPool\Tasks\PushNotificationTask;
 use App\Patterns\ThreadPool\Tasks\DataBackupTask;
 
-/**
- * Thread Pool Manager - Demo class để sử dụng Thread Pool Pattern
- */
 class ThreadPoolManager
 {
     private ThreadPool $threadPool;
@@ -22,52 +19,52 @@ class ThreadPoolManager
     }
 
     /**
-     * Demo cơ bản về Thread Pool
+     * Demo basic usage of Thread Pool
      */
     public function demonstrateBasicUsage(): void
     {
-        echo "=== DEMO THREAD POOL PATTERN - CƠ BẢN ===\n\n";
+        echo "=== DEMO THREAD POOL PATTERN - BASIC ===\n\n";
 
-        // Khởi động thread pool
+        // Start thread pool
         $this->threadPool->start();
 
-        // Thêm các tasks vào queue
-        $this->threadPool->submitTask(new EmailNotificationTask('Gửi email xác nhận', [
+        // Add tasks to queue
+        $this->threadPool->submitTask(new EmailNotificationTask('Send email confirmation', [
             'recipient' => 'user1@email.com',
-            'subject' => 'Xác nhận đặt chuyến đi',
-            'message' => 'Chuyến đi của bạn đã được xác nhận'
+            'subject' => 'Confirm trip booking',
+            'message' => 'Your trip has been confirmed'
         ]));
 
-        $this->threadPool->submitTask(new PaymentProcessingTask('Xử lý thanh toán', [
+        $this->threadPool->submitTask(new PaymentProcessingTask('Process payment', [
             'amount' => 150000,
             'payment_method' => 'credit_card'
         ]));
 
-        $this->threadPool->submitTask(new LocationUpdateTask('Cập nhật vị trí tài xế', [
+        $this->threadPool->submitTask(new LocationUpdateTask('Update driver location', [
             'driver_id' => 123,
             'lat' => 10.762622,
             'lng' => 106.660172
         ]));
 
-        // Xử lý tất cả tasks
+        // Process all tasks
         $this->threadPool->processTasks();
 
-        // Dừng thread pool
+        // Stop thread pool
         $this->threadPool->stop();
     }
 
     /**
-     * Demo xử lý nhiều tasks cùng lúc
+     * Demo concurrent processing
      */
     public function demonstrateConcurrentProcessing(): void
     {
-        echo "\n=== DEMO THREAD POOL PATTERN - XỬ LÝ ĐỒNG THỜI ===\n\n";
+        echo "\n=== DEMO THREAD POOL PATTERN - CONCURRENT PROCESSING ===\n\n";
 
         $this->threadPool->start();
 
-        // Thêm nhiều tasks cùng lúc
+        // Add multiple tasks
         for ($i = 1; $i <= 8; $i++) {
-            $this->threadPool->submitTask(new FareCalculationTask("Tính cước phí chuyến {$i}", [
+            $this->threadPool->submitTask(new FareCalculationTask("Calculate fare for trip {$i}", [
                 'distance' => rand(5, 20),
                 'duration' => rand(10, 45),
                 'vehicle_type' => ['car', 'bike', 'premium'][rand(0, 2)]
@@ -79,29 +76,29 @@ class ThreadPoolManager
     }
 
     /**
-     * Demo xử lý tasks với lỗi
+     * Demo error handling
      */
     public function demonstrateErrorHandling(): void
     {
-        echo "\n=== DEMO THREAD POOL PATTERN - XỬ LÝ LỖI ===\n\n";
+        echo "\n=== DEMO THREAD POOL PATTERN - ERROR HANDLING ===\n\n";
 
         $this->threadPool->start();
 
-        // Tasks thành công
-        $this->threadPool->submitTask(new PushNotificationTask('Thông báo chuyến đi', [
+        // Successful tasks
+        $this->threadPool->submitTask(new PushNotificationTask('Trip notification', [
             'user_id' => 1,
-            'title' => 'Tài xế đang đến',
-            'body' => 'Tài xế sẽ đến trong 5 phút'
+            'title' => 'Driver is on the way',
+            'body' => 'Driver will arrive in 5 minutes'
         ]));
 
-        // Task có thể thất bại (payment processing)
+        // Task that can fail (payment processing)
         $this->threadPool->submitTask(new PaymentProcessingTask('Thanh toán có thể thất bại', [
             'amount' => 200000,
             'payment_method' => 'expired_card'
         ]));
 
-        // Task thành công khác
-        $this->threadPool->submitTask(new LocationUpdateTask('Cập nhật vị trí', [
+        // Successful task
+        $this->threadPool->submitTask(new LocationUpdateTask('Update driver location', [
             'driver_id' => 456,
             'lat' => 10.800000,
             'lng' => 106.700000
@@ -112,101 +109,101 @@ class ThreadPoolManager
     }
 
     /**
-     * Demo workload thực tế
+     * Demo real-world workload
      */
     public function demonstrateRealWorldWorkload(): void
     {
-        echo "\n=== DEMO THREAD POOL PATTERN - WORKLOAD THỰC TẾ ===\n\n";
+        echo "\n=== DEMO THREAD POOL PATTERN - REAL-WORLD WORKLOAD ===\n\n";
 
         $this->threadPool->start();
 
         // Simulate real-world workload
         $tasks = [
             // Email notifications
-            new EmailNotificationTask('Email chào mừng', [
+            new EmailNotificationTask('Welcome email', [
                 'recipient' => 'newuser@email.com',
-                'subject' => 'Chào mừng đến với RideShare',
-                'message' => 'Cảm ơn bạn đã đăng ký!'
+                'subject' => 'Welcome to RideShare',
+                'message' => 'Thank you for registering!'
             ]),
-            new EmailNotificationTask('Email xác nhận thanh toán', [
+            new EmailNotificationTask('Payment confirmation email', [
                 'recipient' => 'user2@email.com',
-                'subject' => 'Xác nhận thanh toán',
-                'message' => 'Thanh toán của bạn đã được xử lý'
+                'subject' => 'Payment confirmation',
+                'message' => 'Your payment has been processed'
             ]),
 
             // Payment processing
-            new PaymentProcessingTask('Thanh toán chuyến đi 1', [
+            new PaymentProcessingTask('Payment for trip 1', [
                 'amount' => 85000,
                 'payment_method' => 'momo'
             ]),
-            new PaymentProcessingTask('Thanh toán chuyến đi 2', [
+            new PaymentProcessingTask('Payment for trip 2', [
                 'amount' => 120000,
                 'payment_method' => 'zalo_pay'
             ]),
 
             // Location updates
-            new LocationUpdateTask('Cập nhật vị trí tài xế 1', [
+            new LocationUpdateTask('Update driver location 1', [
                 'driver_id' => 101,
                 'lat' => 10.750000,
                 'lng' => 106.650000
             ]),
-            new LocationUpdateTask('Cập nhật vị trí tài xế 2', [
+            new LocationUpdateTask('Update driver location 2', [
                 'driver_id' => 102,
                 'lat' => 10.780000,
                 'lng' => 106.680000
             ]),
 
             // Fare calculations
-            new FareCalculationTask('Tính cước xe máy', [
+            new FareCalculationTask('Calculate bike fare', [
                 'distance' => 8.5,
                 'duration' => 25,
                 'vehicle_type' => 'bike'
             ]),
-            new FareCalculationTask('Tính cước xe hơi', [
+            new FareCalculationTask('Calculate car fare', [
                 'distance' => 15.2,
                 'duration' => 35,
                 'vehicle_type' => 'car'
             ]),
 
             // Push notifications
-            new PushNotificationTask('Thông báo tài xế đến', [
+            new PushNotificationTask('Driver arrived notification', [
                 'user_id' => 201,
-                'title' => 'Tài xế đã đến',
+                'title' => 'Driver arrived',
                 'body' => 'Vui lòng ra ngoài để lên xe'
             ]),
-            new PushNotificationTask('Thông báo hoàn thành chuyến đi', [
+            new PushNotificationTask('Trip completed notification', [
                 'user_id' => 202,
-                'title' => 'Chuyến đi hoàn thành',
-                'body' => 'Cảm ơn bạn đã sử dụng dịch vụ'
+                'title' => 'Trip completed',
+                'body' => 'Thank you for using our service'
             ]),
 
             // Data backup
-            new DataBackupTask('Backup bảng users', [
+            new DataBackupTask('Backup users table', [
                 'table' => 'users',
                 'backup_type' => 'daily'
             ]),
-            new DataBackupTask('Backup bảng trips', [
+            new DataBackupTask('Backup trips table', [
                 'table' => 'trips',
                 'backup_type' => 'daily'
             ])
         ];
 
-        // Submit tất cả tasks
+        // Submit all tasks
         foreach ($tasks as $task) {
             $this->threadPool->submitTask($task);
         }
 
-        // Xử lý tất cả tasks
+        // Process all tasks
         $this->threadPool->processTasks();
 
-        // Hiển thị thống kê chi tiết
+        // Display detailed statistics
         $this->displayDetailedStats();
 
         $this->threadPool->stop();
     }
 
     /**
-     * Hiển thị thống kê chi tiết
+     * Display detailed statistics
      */
     private function displayDetailedStats(): void
     {
@@ -214,23 +211,23 @@ class ThreadPoolManager
         $completedTasks = $this->threadPool->getCompletedTasks();
         $failedTasks = $this->threadPool->getFailedTasks();
 
-        echo "\n📊 THỐNG KÊ CHI TIẾT:\n";
-        echo "   - Số workers tối đa: {$stats['max_workers']}\n";
-        echo "   - Workers đang hoạt động: {$stats['active_workers']}\n";
-        echo "   - Tasks trong queue: {$stats['queue_size']}\n";
-        echo "   - Tasks hoàn thành: {$stats['completed_tasks']}\n";
-        echo "   - Tasks thất bại: {$stats['failed_tasks']}\n";
-        echo "   - Trạng thái pool: " . ($stats['is_running'] ? 'Đang chạy' : 'Đã dừng') . "\n";
+        echo "\n📊 DETAILED STATISTICS:\n";
+        echo "   - Maximum workers: {$stats['max_workers']}\n";
+        echo "   - Active workers: {$stats['active_workers']}\n";
+        echo "   - Tasks in queue: {$stats['queue_size']}\n";
+        echo "   - Completed tasks: {$stats['completed_tasks']}\n";
+        echo "   - Failed tasks: {$stats['failed_tasks']}\n";
+        echo "   - Pool status: " . ($stats['is_running'] ? 'Running' : 'Stopped') . "\n";
 
         if (!empty($completedTasks)) {
-            echo "\n✅ TASKS HOÀN THÀNH:\n";
+            echo "\n✅ COMPLETED TASKS:\n";
             foreach ($completedTasks as $task) {
                 echo "   - {$task['task']} (Worker {$task['worker_id']}) - {$task['execution_time']}s\n";
             }
         }
 
         if (!empty($failedTasks)) {
-            echo "\n❌ TASKS THẤT BẠI:\n";
+            echo "\n❌ FAILED TASKS:\n";
             foreach ($failedTasks as $task) {
                 echo "   - {$task['task']} (Worker {$task['worker_id']}): {$task['error']}\n";
             }
@@ -238,20 +235,20 @@ class ThreadPoolManager
     }
 
     /**
-     * Demo so sánh hiệu suất
+     * Demo performance comparison
      */
     public function demonstratePerformanceComparison(): void
     {
-        echo "\n=== DEMO THREAD POOL PATTERN - SO SÁNH HIỆU SUẤT ===\n\n";
+        echo "\n=== DEMO THREAD POOL PATTERN - PERFORMANCE COMPARISON ===\n\n";
 
-        // Test với 1 worker (sequential)
-        echo "🔄 Test với 1 worker (sequential):\n";
+        // Test with 1 worker (sequential)
+        echo "🔄 Test with 1 worker (sequential):\n";
         $sequentialPool = new ThreadPool(1);
         $startTime = microtime(true);
 
         $sequentialPool->start();
         for ($i = 1; $i <= 5; $i++) {
-            $sequentialPool->submitTask(new FareCalculationTask("Tính cước {$i}", [
+            $sequentialPool->submitTask(new FareCalculationTask("Calculate fare for trip {$i}", [
                 'distance' => rand(5, 15),
                 'duration' => rand(10, 30),
                 'vehicle_type' => 'car'
@@ -262,14 +259,14 @@ class ThreadPoolManager
 
         $sequentialTime = microtime(true) - $startTime;
 
-        // Test với 5 workers (parallel)
-        echo "\n🔄 Test với 5 workers (parallel):\n";
+        // Test with 5 workers (parallel)
+        echo "\n🔄 Test with 5 workers (parallel):\n";
         $parallelPool = new ThreadPool(5);
         $startTime = microtime(true);
 
         $parallelPool->start();
         for ($i = 1; $i <= 5; $i++) {
-            $parallelPool->submitTask(new FareCalculationTask("Tính cước {$i}", [
+            $parallelPool->submitTask(new FareCalculationTask("Calculate fare for trip {$i}", [
                 'distance' => rand(5, 15),
                 'duration' => rand(10, 30),
                 'vehicle_type' => 'car'
@@ -280,9 +277,9 @@ class ThreadPoolManager
 
         $parallelTime = microtime(true) - $startTime;
 
-        echo "\n📈 KẾT QUẢ SO SÁNH:\n";
+        echo "\n📈 PERFORMANCE COMPARISON:\n";
         echo "   - Sequential (1 worker): " . round($sequentialTime, 3) . "s\n";
         echo "   - Parallel (5 workers): " . round($parallelTime, 3) . "s\n";
-        echo "   - Cải thiện: " . round((($sequentialTime - $parallelTime) / $sequentialTime) * 100, 1) . "%\n";
+        echo "   - Improvement: " . round((($sequentialTime - $parallelTime) / $sequentialTime) * 100, 1) . "%\n";
     }
 }

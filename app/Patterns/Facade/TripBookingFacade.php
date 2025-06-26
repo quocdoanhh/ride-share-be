@@ -8,16 +8,6 @@ use App\Patterns\Facade\Services\DriverService;
 use App\Patterns\Facade\Services\NotificationService;
 use App\Patterns\Facade\Services\TripService;
 
-/**
- * Facade Pattern - Đơn giản hóa việc đặt chuyến đi
- *
- * Facade cung cấp interface đơn giản cho các subsystem phức tạp:
- * - UserService: Xác thực user
- * - PaymentService: Xử lý thanh toán
- * - DriverService: Tìm tài xế
- * - NotificationService: Gửi thông báo
- * - TripService: Tạo chuyến đi
- */
 class TripBookingFacade
 {
     private UserService $userService;
@@ -36,18 +26,22 @@ class TripBookingFacade
     }
 
     /**
-     * Đặt chuyến đi - một method đơn giản thay vì gọi nhiều service
+     * Book trip - a simple method instead of calling multiple services
+     * @param array $bookingData
+     *
+     * @throws \Exception
+     * @return array
      */
     public function bookTrip(array $bookingData): array
     {
         try {
-            // 1. Xác thực user
+            // 1. Authenticate user
             $user = $this->userService->authenticate($bookingData['user_id']);
             if (!$user) {
-                throw new \Exception('User không hợp lệ');
+                throw new \Exception('Invalid user');
             }
 
-            // 2. Kiểm tra thanh toán
+            // 2. Check payment
             $payment = $this->paymentService->processPayment([
                 'user_id' => $user['id'],
                 'amount' => $bookingData['estimated_fare'],
@@ -55,10 +49,10 @@ class TripBookingFacade
             ]);
 
             if (!$payment['success']) {
-                throw new \Exception('Thanh toán thất bại: ' . $payment['message']);
+                throw new \Exception('Payment failed: ' . $payment['message']);
             }
 
-            // 3. Tìm tài xế gần nhất
+            // 3. Find nearest driver
             $driver = $this->driverService->findNearestDriver([
                 'pickup_lat' => $bookingData['pickup_lat'],
                 'pickup_lng' => $bookingData['pickup_lng'],
@@ -66,10 +60,10 @@ class TripBookingFacade
             ]);
 
             if (!$driver) {
-                throw new \Exception('Không tìm thấy tài xế phù hợp');
+                throw new \Exception('No suitable driver found');
             }
 
-            // 4. Tạo chuyến đi
+            // 4. Create trip
             $trip = $this->tripService->createTrip([
                 'user_id' => $user['id'],
                 'driver_id' => $driver['id'],
@@ -83,7 +77,7 @@ class TripBookingFacade
                 'payment_id' => $payment['payment_id']
             ]);
 
-            // 5. Gửi thông báo
+            // 5. Send booking confirmation
             $this->notificationService->sendBookingConfirmation([
                 'user_id' => $user['id'],
                 'driver_id' => $driver['id'],
@@ -97,11 +91,11 @@ class TripBookingFacade
                 'trip_id' => $trip['id'],
                 'driver' => $driver,
                 'estimated_arrival' => $trip['estimated_arrival'],
-                'message' => 'Đặt chuyến đi thành công!'
+                'message' => 'Trip booked successfully!'
             ];
 
         } catch (\Exception $e) {
-            // Rollback nếu cần
+            // Rollback if needed
             $this->rollbackBooking($bookingData);
 
             return [
@@ -112,32 +106,37 @@ class TripBookingFacade
     }
 
     /**
-     * Hủy chuyến đi
+     * Cancel trip
+     * @param int $tripId
+     * @param int $userId
+     *
+     * @return array
+     * @throws \Exception
      */
     public function cancelTrip(int $tripId, int $userId): array
     {
         try {
-            // 1. Xác thực user
+            // 1. Authenticate user
             $user = $this->userService->authenticate($userId);
             if (!$user) {
-                throw new \Exception('User không hợp lệ');
+                throw new \Exception('Invalid user');
             }
 
-            // 2. Lấy thông tin chuyến đi
+            // 2. Get trip information
             $trip = $this->tripService->getTrip($tripId);
             if (!$trip || $trip['user_id'] != $userId) {
-                throw new \Exception('Chuyến đi không tồn tại hoặc không thuộc về bạn');
+                throw new \Exception('Trip not found or not belong to you');
             }
 
-            // 3. Hủy chuyến đi
+            // 3. Cancel trip
             $cancelledTrip = $this->tripService->cancelTrip($tripId);
 
-            // 4. Hoàn tiền nếu cần
+            // 4. Refund if needed
             if ($trip['status'] === 'confirmed') {
                 $refund = $this->paymentService->processRefund($trip['payment_id']);
             }
 
-            // 5. Gửi thông báo
+            // 5. Send cancellation notification
             $this->notificationService->sendCancellationNotification([
                 'user_id' => $userId,
                 'driver_id' => $trip['driver_id'],
@@ -146,7 +145,7 @@ class TripBookingFacade
 
             return [
                 'success' => true,
-                'message' => 'Hủy chuyến đi thành công',
+                'message' => 'Trip cancelled successfully',
                 'refund_amount' => $refund['amount'] ?? 0
             ];
 
@@ -159,13 +158,17 @@ class TripBookingFacade
     }
 
     /**
-     * Theo dõi chuyến đi
+     * Track trip
+     * @param int $tripId
+     *
+     * @return array
+     * @throws \Exception
      */
     public function trackTrip(int $tripId): array
     {
         $trip = $this->tripService->getTrip($tripId);
         if (!$trip) {
-            return ['success' => false, 'message' => 'Chuyến đi không tồn tại'];
+            return ['success' => false, 'message' => 'Trip not found'];
         }
 
         $driver = $this->driverService->getDriver($trip['driver_id']);
@@ -181,24 +184,31 @@ class TripBookingFacade
     }
 
     /**
-     * Đánh giá chuyến đi
+     * Rate trip
+     * @param int $tripId
+     * @param int $userId
+     * @param int $rating
+     * @param string $comment
+     *
+     * @return array
+     * @throws \Exception
      */
     public function rateTrip(int $tripId, int $userId, int $rating, string $comment = ''): array
     {
         try {
-            // 1. Xác thực user
+            // 1. Authenticate user
             $user = $this->userService->authenticate($userId);
             if (!$user) {
-                throw new \Exception('User không hợp lệ');
+                throw new \Exception('Invalid user');
             }
 
-            // 2. Kiểm tra chuyến đi đã hoàn thành
+            // 2. Check if trip is completed
             $trip = $this->tripService->getTrip($tripId);
             if (!$trip || $trip['status'] !== 'completed') {
-                throw new \Exception('Chuyến đi chưa hoàn thành');
+                throw new \Exception('Trip not completed');
             }
 
-            // 3. Lưu đánh giá
+            // 3. Save rating
             $ratingData = $this->tripService->saveRating([
                 'trip_id' => $tripId,
                 'user_id' => $userId,
@@ -207,7 +217,7 @@ class TripBookingFacade
                 'comment' => $comment
             ]);
 
-            // 4. Gửi thông báo cho tài xế
+            // 4. Send rating notification to driver
             $this->notificationService->sendRatingNotification([
                 'driver_id' => $trip['driver_id'],
                 'rating' => $rating,
@@ -216,7 +226,7 @@ class TripBookingFacade
 
             return [
                 'success' => true,
-                'message' => 'Đánh giá thành công',
+                'message' => 'Rating saved successfully',
                 'rating_id' => $ratingData['id']
             ];
 
@@ -229,11 +239,14 @@ class TripBookingFacade
     }
 
     /**
-     * Rollback khi có lỗi
+     * Rollback if error
+     * @param array $bookingData
+     *
+     * @return void
      */
     private function rollbackBooking(array $bookingData): void
     {
-        // Logic rollback nếu cần
-        // Ví dụ: hoàn tiền, hủy chuyến đi, etc.
+        // Logic rollback if needed
+        // Example: refund, cancel trip, etc.
     }
 }

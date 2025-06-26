@@ -4,22 +4,19 @@ namespace App\Patterns\ThreadPool\Tasks;
 
 use App\Patterns\ThreadPool\Task;
 
-/**
- * Task gửi email thông báo
- */
 class EmailNotificationTask extends Task
 {
     public function execute(): mixed
     {
         $recipient = $this->data['recipient'] ?? 'unknown@email.com';
-        $subject = $this->data['subject'] ?? 'Thông báo từ RideShare';
-        $message = $this->data['message'] ?? 'Nội dung thông báo';
+        $subject = $this->data['subject'] ?? 'Notification from RideShare';
+        $message = $this->data['message'] ?? 'Notification content';
 
         // Simulate email sending
         usleep(rand(100000, 500000)); // 0.1 - 0.5 seconds
 
-        echo "   📧 Gửi email đến: {$recipient}\n";
-        echo "   📧 Tiêu đề: {$subject}\n";
+        echo "   📧 Send email to: {$recipient}\n";
+        echo "   📧 Subject: {$subject}\n";
 
         return [
             'recipient' => $recipient,
@@ -31,7 +28,7 @@ class EmailNotificationTask extends Task
 }
 
 /**
- * Task xử lý thanh toán
+ * Task process payment
  */
 class PaymentProcessingTask extends Task
 {
@@ -45,8 +42,8 @@ class PaymentProcessingTask extends Task
 
         $success = rand(1, 10) > 2; // 80% success rate
 
-        echo "   💳 Xử lý thanh toán: {$amount} VND\n";
-        echo "   💳 Phương thức: {$paymentMethod}\n";
+        echo "   💳 Process payment: {$amount} VND\n";
+        echo "   💳 Payment method: {$paymentMethod}\n";
 
         if ($success) {
             return [
@@ -56,13 +53,13 @@ class PaymentProcessingTask extends Task
                 'transaction_id' => 'TXN_' . time() . '_' . rand(1000, 9999)
             ];
         } else {
-            throw new \Exception('Thanh toán thất bại - thẻ bị từ chối');
+            throw new \Exception('Payment failed - card declined');
         }
     }
 }
 
 /**
- * Task cập nhật vị trí tài xế
+ * Task update driver location
  */
 class LocationUpdateTask extends Task
 {
@@ -75,8 +72,8 @@ class LocationUpdateTask extends Task
         // Simulate location update
         usleep(rand(50000, 200000)); // 0.05 - 0.2 seconds
 
-        echo "   📍 Cập nhật vị trí tài xế {$driverId}\n";
-        echo "   📍 Tọa độ: {$lat}, {$lng}\n";
+        echo "   📍 Update driver location {$driverId}\n";
+        echo "   📍 Location: {$lat}, {$lng}\n";
 
         return [
             'driver_id' => $driverId,
@@ -89,7 +86,7 @@ class LocationUpdateTask extends Task
 }
 
 /**
- * Task tính toán cước phí
+ * Task calculate fare
  */
 class FareCalculationTask extends Task
 {
@@ -117,9 +114,9 @@ class FareCalculationTask extends Task
 
         $totalFare *= $multipliers[$vehicleType] ?? 1.0;
 
-        echo "   🧮 Tính cước phí cho {$vehicleType}\n";
-        echo "   🧮 Khoảng cách: {$distance}km, Thời gian: {$duration} phút\n";
-        echo "   🧮 Tổng cước: " . number_format($totalFare) . " VND\n";
+        echo "   🧮 Calculate fare for {$vehicleType}\n";
+        echo "   🧮 Distance: {$distance}km, Duration: {$duration} minutes\n";
+        echo "   🧮 Total fare: " . number_format($totalFare) . " VND\n";
 
         return [
             'distance' => $distance,
@@ -135,21 +132,21 @@ class FareCalculationTask extends Task
 }
 
 /**
- * Task gửi push notification
+ * Task send push notification
  */
 class PushNotificationTask extends Task
 {
     public function execute(): mixed
     {
         $userId = $this->data['user_id'] ?? 0;
-        $title = $this->data['title'] ?? 'Thông báo';
-        $body = $this->data['body'] ?? 'Nội dung thông báo';
+        $title = $this->data['title'] ?? 'Notification';
+        $body = $this->data['body'] ?? 'Notification content';
 
         // Simulate push notification
         usleep(rand(80000, 250000)); // 0.08 - 0.25 seconds
 
-        echo "   🔔 Gửi push notification cho user {$userId}\n";
-        echo "   🔔 Tiêu đề: {$title}\n";
+        echo "   🔔 Send push notification to user {$userId}\n";
+        echo "   🔔 Title: {$title}\n";
 
         return [
             'user_id' => $userId,
@@ -162,7 +159,7 @@ class PushNotificationTask extends Task
 }
 
 /**
- * Task backup dữ liệu
+ * Task backup data
  */
 class DataBackupTask extends Task
 {
@@ -174,8 +171,8 @@ class DataBackupTask extends Task
         // Simulate data backup
         usleep(rand(500000, 1500000)); // 0.5 - 1.5 seconds
 
-        echo "   💾 Backup dữ liệu bảng: {$table}\n";
-        echo "   💾 Loại backup: {$backupType}\n";
+        echo "   💾 Backup table: {$table}\n";
+        echo "   💾 Backup type: {$backupType}\n";
 
         return [
             'table' => $table,

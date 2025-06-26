@@ -14,7 +14,7 @@ interface UserInterface
 }
 
 /**
- * Concrete Component - User cơ bản
+ * Concrete Component - Basic User
  */
 class BasicUser implements UserInterface
 {

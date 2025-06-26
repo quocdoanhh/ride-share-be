@@ -20,7 +20,7 @@ class PaymentService
 
         return [
             'success' => false,
-            'message' => 'Thẻ bị từ chối hoặc không đủ tiền'
+            'message' => 'Card declined or insufficient funds'
         ];
     }
 

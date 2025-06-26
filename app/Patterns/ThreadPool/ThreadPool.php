@@ -2,14 +2,6 @@
 
 namespace App\Patterns\ThreadPool;
 
-/**
- * Thread Pool Pattern - Quản lý pool các worker threads
- *
- * Trong PHP, chúng ta sẽ mô phỏng Thread Pool bằng cách sử dụng:
- * - Queue để quản lý tasks
- * - Workers để xử lý tasks
- * - Process/Job để mô phỏng threading
- */
 class ThreadPool
 {
     private array $workers = [];
@@ -25,64 +17,64 @@ class ThreadPool
     }
 
     /**
-     * Khởi động thread pool
+     * Start thread pool
      */
     public function start(): void
     {
         $this->isRunning = true;
-        echo "🚀 Thread Pool đã khởi động với {$this->maxWorkers} workers\n";
+        echo "🚀 Thread Pool started with {$this->maxWorkers} workers\n";
 
-        // Khởi tạo workers
+        // Initialize workers
         for ($i = 0; $i < $this->maxWorkers; $i++) {
             $this->workers[] = new Worker($i + 1);
         }
     }
 
     /**
-     * Dừng thread pool
+     * Stop thread pool
      */
     public function stop(): void
     {
         $this->isRunning = false;
-        echo "🛑 Thread Pool đã dừng\n";
+        echo "🛑 Thread Pool stopped\n";
     }
 
     /**
-     * Thêm task vào queue
+     * Add task to queue
      */
     public function submitTask(Task $task): void
     {
         $this->taskQueue[] = $task;
-        echo "📝 Task '{$task->getName()}' đã được thêm vào queue\n";
+        echo "📝 Task '{$task->getName()}' added to queue\n";
     }
 
     /**
-     * Xử lý tất cả tasks trong queue
+     * Process all tasks in queue
      */
     public function processTasks(): void
     {
         if (empty($this->taskQueue)) {
-            echo "📭 Queue trống, không có task nào để xử lý\n";
+            echo "📭 Queue is empty, no tasks to process\n";
             return;
         }
 
-        echo "⚡ Bắt đầu xử lý " . count($this->taskQueue) . " tasks\n\n";
+        echo "⚡ Starting to process " . count($this->taskQueue) . " tasks\n\n";
 
         $workerIndex = 0;
         foreach ($this->taskQueue as $task) {
             $worker = $this->workers[$workerIndex % $this->maxWorkers];
 
             try {
-                echo "🔄 Worker {$worker->getId()} đang xử lý task: {$task->getName()}\n";
+                echo "🔄 Worker {$worker->getId()} is processing task: {$task->getName()}\n";
 
                 $result = $worker->execute($task);
 
                 if ($result['success']) {
                     $this->completedTasks[] = $result;
-                    echo "✅ Task '{$task->getName()}' hoàn thành thành công\n";
+                    echo "✅ Task '{$task->getName()}' completed successfully\n";
                 } else {
                     $this->failedTasks[] = $result;
-                    echo "❌ Task '{$task->getName()}' thất bại: {$result['error']}\n";
+                    echo "❌ Task '{$task->getName()}' failed: {$result['error']}\n";
                 }
 
             } catch (\Exception $e) {
@@ -93,22 +85,22 @@ class ThreadPool
                     'error' => $e->getMessage()
                 ];
                 $this->failedTasks[] = $failedResult;
-                echo "💥 Exception trong task '{$task->getName()}': {$e->getMessage()}\n";
+                echo "💥 Exception in task '{$task->getName()}': {$e->getMessage()}\n";
             }
 
             $workerIndex++;
         }
 
-        // Clear queue sau khi xử lý xong
+        // Clear queue after processing
         $this->taskQueue = [];
 
-        echo "\n📊 Thống kê:\n";
-        echo "   - Tasks hoàn thành: " . count($this->completedTasks) . "\n";
-        echo "   - Tasks thất bại: " . count($this->failedTasks) . "\n";
+        echo "\n📊 Statistics:\n";
+        echo "   - Completed tasks: " . count($this->completedTasks) . "\n";
+        echo "   - Failed tasks: " . count($this->failedTasks) . "\n";
     }
 
     /**
-     * Lấy thống kê
+     * Get statistics
      */
     public function getStats(): array
     {
@@ -123,7 +115,7 @@ class ThreadPool
     }
 
     /**
-     * Lấy danh sách tasks đã hoàn thành
+     * Get completed tasks
      */
     public function getCompletedTasks(): array
     {
@@ -131,7 +123,7 @@ class ThreadPool
     }
 
     /**
-     * Lấy danh sách tasks thất bại
+     * Get failed tasks
      */
     public function getFailedTasks(): array
     {
@@ -146,12 +138,12 @@ class ThreadPool
         $this->taskQueue = [];
         $this->completedTasks = [];
         $this->failedTasks = [];
-        echo "🔄 Thread Pool đã được reset\n";
+        echo "🔄 Thread Pool reset\n";
     }
 }
 
 /**
- * Worker class - Đại diện cho một worker thread
+ * Worker class - Represents a worker thread
  */
 class Worker
 {
@@ -174,7 +166,10 @@ class Worker
     }
 
     /**
-     * Thực thi task
+     * Execute task
+     * @param Task $task
+     *
+     * @return array
      */
     public function execute(Task $task): array
     {
