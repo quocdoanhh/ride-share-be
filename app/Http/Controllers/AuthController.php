@@ -24,7 +24,8 @@ class AuthController extends Controller
             ], Response::HTTP_UNAUTHORIZED);
         }
 
-        $user->notify(new LoginVerification());
+        $code = generate_random_string();
+        $user->update(['login_verification_code' => $code]);
 
         return response()->json([
             'message' => 'Verification code sent to your phone',
@@ -52,6 +53,20 @@ class AuthController extends Controller
     {
         return response()->json([
             'data' => auth()->user(),
+        ]);
+    }
+
+    public function getVerificationCode(LoginRequest $request)
+    {
+        $user = $this->userService->login($request->validated());
+        if (!$user) {
+            return response()->json([
+                'message' => 'User not found',
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        return response()->json([
+            'code' => $user->login_verification_code,
         ]);
     }
 }

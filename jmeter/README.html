@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JMeter Testing Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header .subtitle {
+            color: #7f8c8d;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+
+        .content {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section h2 {
+            color: #2c3e50;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section h2::before {
+            margin-right: 15px;
+            font-size: 1.2em;
+        }
+
+        .section h3 {
+            color: #34495e;
+            font-size: 1.4em;
+            margin: 25px 0 15px 0;
+            padding-left: 20px;
+            border-left: 4px solid #3498db;
+        }
+
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .code-block::before {
+            content: 'Terminal';
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            background: #34495e;
+            color: #ecf0f1;
+            padding: 2px 8px;
+            border-radius: 5px;
+            font-size: 0.8em;
+        }
+
+        .file-structure {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .metrics-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .metrics-table th,
+        .metrics-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .metrics-table th {
+            background: #3498db;
+            color: white;
+            font-weight: 600;
+        }
+
+        .metrics-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .good { color: #27ae60; font-weight: 600; }
+        .warning { color: #f39c12; font-weight: 600; }
+
+        .info-box {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        .success-box {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        .toc {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .toc h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        .toc ul {
+            list-style: none;
+        }
+
+        .toc li {
+            margin: 10px 0;
+        }
+
+        .toc a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .toc a:hover {
+            color: #2980b9;
+            text-decoration: underline;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            padding: 20px;
+            font-size: 0.9em;
+        }
+
+        .step {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid #3498db;
+        }
+
+        .step-number {
+            background: #3498db;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        ul, ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        strong {
+            color: #2c3e50;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .code-block {
+                font-size: 0.9em;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 JMeter Testing Guide</h1>
+            <div class="subtitle">Hướng dẫn sử dụng JMeter để test API</div>
+        </div>
+
+        <div class="toc">
+            <h2>📋 Mục lục</h2>
+            <ul>
+                <li><a href="#structure">1. Cấu trúc thư mục</a></li>
+                <li><a href="#usage">2. Cách sử dụng</a></li>
+                <li><a href="#results">3. Kết quả</a></li>
+            </ul>
+        </div>
+
+        <div class="content">
+            <div class="section" id="structure">
+                <h2>📁 Cấu trúc thư mục</h2>
+                <div class="file-structure">
+<pre>
+jmeter/
+├── README.html                  # File hướng dẫn HTML này
+├── run-jmeter-test.sh           # Script chạy benchmark test đầy đủ
+├── ride-share-benchmark.jmx     # Test plan JMeter chính
+├── report-performance.html      # Template báo cáo performance
+├── results.jtl                  # Kết quả test (tự động tạo)
+└── html-report/                 # Thư mục chứa báo cáo HTML (tự động tạo)
+    ├── index.html               # Báo cáo HTML chi tiết
+    └── statistics.json          # Thống kê kết quả test
+</pre>
+                </div>
+            </div>
+
+            <div class="section" id="usage">
+                <h2>🚀 Cách sử dụng</h2>
+
+                <h3>1. Chạy benchmark test đầy đủ</h3>
+                <p>Script này sẽ tự động thực hiện toàn bộ quá trình test:</p>
+
+                <div class="code-block">
+                    <pre>
+# Cấp quyền thực thi
+chmod +x run-jmeter-test.sh
+
+# Chạy benchmark test
+./run-jmeter-test.sh
+                    </pre>
+                </div>
+
+                <div class="success-box">
+                    <h4>Kết quả mong đợi:</h4>
+                    <ul>
+                        <li>📊 100% success rate</li>
+                        <li>⏱️ Average response time < 200ms</li>
+                        <li>📈 Throughput > 10 requests/giây</li>
+                        <li>❌ 0% error rate</li>
+                    </ul>
+                </div>
+
+                <h3>2. Xem báo cáo</h3>
+                <p>Sau khi chạy xong, báo cáo sẽ được tạo trong thư mục <code>../reports/</code>:</p>
+            </div>
+
+            <div class="section" id="results">
+                <h2>📊 Kết quả</h2>
+
+                <h3>Các chỉ số quan trọng</h3>
+                <table class="metrics-table">
+                    <thead>
+                        <tr>
+                            <th>Chỉ số</th>
+                            <th>Ý nghĩa</th>
+                            <th>Mục tiêu</th>
+                            <th>Đánh giá</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Success Rate</strong></td>
+                            <td>Tỷ lệ request thành công</td>
+                            <td>≥ 99%</td>
+                            <td class="good">✅ Tốt</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Average Response Time</strong></td>
+                            <td>Thời gian phản hồi trung bình</td>
+                            <td>< 200ms</td>
+                            <td class="good">✅ Tốt</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Throughput</strong></td>
+                            <td>Số request/giây</td>
+                            <td>> 10 req/s</td>
+                            <td class="good">✅ Tốt</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Error Rate</strong></td>
+                            <td>Tỷ lệ lỗi</td>
+                            <td>0%</td>
+                            <td class="good">✅ Tốt</td>
+                        </tr>
+                        <tr>
+                            <td><strong>95th Percentile</strong></td>
+                            <td>95% request có RT < giá trị này</td>
+                            <td>< 500ms</td>
+                            <td class="warning">⚠️ Chấp nhận</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Set current date
+        document.getElementById('current-date').textContent = new Date().toLocaleDateString('vi-VN');
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -74,3 +74,14 @@ services:
       - "6001:6001"
     depends_on:
       - redis
+  jmeter:
+    image: justb4/jmeter:5.5
+    container_name: ${COMPOSE_PROJECT_NAME}_jmeter
+    volumes:
+      - ./jmeter:/jmeter
+      - ./storage/logs:/var/www/html/storage/logs:ro
+    depends_on:
+      - nginx
+      - app
+    entrypoint: >
+      sh -c "rm -f /jmeter/results.jtl /jmeter/jmeter.log && jmeter -n -t /jmeter/ride-share-benchmark.jmx -l /jmeter/results.jtl -j /jmeter/jmeter.log && tail -f /jmeter/jmeter.log"

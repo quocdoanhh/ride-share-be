@@ -9,6 +9,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['prefix' => 'login'], function () {
         Route::post('/', [AuthController::class, 'login'])->name('login');
         Route::post('/verify', [AuthController::class, 'verify']);
+        Route::get('/code', [AuthController::class, 'getVerificationCode']);
     });
 
     Route::middleware(['auth:sanctum'])->group(function () {

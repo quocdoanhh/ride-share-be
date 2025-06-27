@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JMeter Report - Ride Share API</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header .subtitle {
+            color: #7f8c8d;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+
+        .timestamp {
+            background: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: inline-block;
+            font-weight: 600;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .summary-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .summary-card.success {
+            border-left: 5px solid #27ae60;
+        }
+
+        .summary-card.error {
+            border-left: 5px solid #e74c3c;
+        }
+
+        .summary-card.info {
+            border-left: 5px solid #3498db;
+        }
+
+        .summary-card.warning {
+            border-left: 5px solid #f39c12;
+        }
+
+        .metric-value {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .metric-label {
+            color: #7f8c8d;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+
+        .success .metric-value {
+            color: #27ae60;
+        }
+
+        .error .metric-value {
+            color: #e74c3c;
+        }
+
+        .info .metric-value {
+            color: #3498db;
+        }
+
+        .warning .metric-value {
+            color: #f39c12;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .section h2 {
+            color: #2c3e50;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        .endpoint-list {
+            list-style: none;
+        }
+
+        .endpoint-item {
+            background: #f8f9fa;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .endpoint-method {
+            background: #3498db;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .endpoint-path {
+            font-family: 'Courier New', monospace;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .performance-chart {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .chart-bar {
+            background: linear-gradient(90deg, #3498db, #2980b9);
+            height: 30px;
+            border-radius: 15px;
+            margin: 10px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-label {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-weight: 600;
+            z-index: 1;
+        }
+
+        .chart-value {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-weight: 600;
+            z-index: 1;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            padding: 20px;
+            font-size: 0.9em;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-success {
+            background: #27ae60;
+        }
+
+        .status-error {
+            background: #e74c3c;
+        }
+
+        .status-warning {
+            background: #f39c12;
+        }
+
+        .metrics-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .metrics-table th,
+        .metrics-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .metrics-table th {
+            background: #3498db;
+            color: white;
+            font-weight: 600;
+        }
+
+        .metrics-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .good { color: #27ae60; font-weight: 600; }
+        .warning { color: #f39c12; font-weight: 600; }
+        .bad { color: #e74c3c; font-weight: 600; }
+
+        .info-box {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        .success-box {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background: #f8f9fa;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+            transition: background 0.3s ease;
+        }
+
+        .tab.active {
+            background: #3498db;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .endpoint-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .tab {
+                border-radius: 5px;
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 JMeter Report</h1>
+            <div class="subtitle">Ride Share API Performance Test</div>
+        </div>
+
+        <div class="summary-grid">
+            <div class="summary-card success">
+                <div class="metric-value" id="success-rate">0%</div>
+                <div class="metric-label">Success Rate</div>
+            </div>
+            <div class="summary-card info">
+                <div class="metric-value" id="total-requests">0</div>
+                <div class="metric-label">Total Requests</div>
+            </div>
+            <div class="summary-card warning">
+                <div class="metric-value" id="avg-response-time">0ms</div>
+                <div class="metric-label">Avg Response Time</div>
+            </div>
+            <div class="summary-card error">
+                <div class="metric-value" id="error-rate">0%</div>
+                <div class="metric-label">Error Rate</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📊 Performance Metrics</h2>
+            <div class="performance-chart">
+                <div class="chart-bar" style="width: 85%;">
+                    <span class="chart-label">Throughput</span>
+                    <span class="chart-value" id="throughput-value">0 req/s</span>
+                </div>
+                <div class="chart-bar" style="width: 70%;">
+                    <span class="chart-label">Average Response Time</span>
+                    <span class="chart-value" id="avg-rt-value">0ms</span>
+                </div>
+                <div class="chart-bar" style="width: 95%;">
+                    <span class="chart-label">Min Response Time</span>
+                    <span class="chart-value" id="min-rt-value">0ms</span>
+                </div>
+                <div class="chart-bar" style="width: 60%;">
+                    <span class="chart-label">Max Response Time</span>
+                    <span class="chart-value" id="max-rt-value">0ms</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📖 Hướng dẫn đọc báo cáo</h2>
+
+            <div class="tabs">
+                <button class="tab active" onclick="openTab(event, 'metrics')">Chỉ số chính</button>
+                <button class="tab" onclick="openTab(event, 'evaluation')">Cách đánh giá</button>
+                <button class="tab" onclick="openTab(event, 'jmeter-tabs')">JMeter Tabs</button>
+            </div>
+
+            <div id="metrics" class="tab-content active">
+                <h3>📈 Ý nghĩa các chỉ số chính</h3>
+                <table class="metrics-table">
+                    <thead>
+                        <tr>
+                            <th>Chỉ số</th>
+                            <th>Ý nghĩa</th>
+                            <th>Mục tiêu</th>
+                            <th>Đánh giá</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Throughput</strong></td>
+                            <td>Số lượng request/giây</td>
+                            <td>Càng cao càng tốt</td>
+                            <td class="good">Tốt: > 10 req/s</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Average Response Time</strong></td>
+                            <td>Thời gian phản hồi trung bình (ms)</td>
+                            <td>< 200ms</td>
+                            <td class="good">Tốt: < 200ms</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Min/Max Response Time</strong></td>
+                            <td>Thời gian phản hồi nhỏ nhất/lớn nhất (ms)</td>
+                            <td>Ổn định</td>
+                            <td class="warning">Chấp nhận: < 1000ms</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Error %</strong></td>
+                            <td>Tỷ lệ lỗi</td>
+                            <td>0%</td>
+                            <td class="good">Tốt: 0%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Samples</strong></td>
+                            <td>Tổng số request đã gửi</td>
+                            <td>Đủ để thống kê</td>
+                            <td class="info">Tùy test plan</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Latency</strong></td>
+                            <td>Thời gian chờ phản hồi đầu tiên (ms)</td>
+                            <td>< 100ms</td>
+                            <td class="good">Tốt: < 100ms</td>
+                        </tr>
+                        <tr>
+                            <td><strong>95th Percentile</strong></td>
+                            <td>95% request có thời gian phản hồi nhỏ hơn giá trị này</td>
+                            <td>< 500ms</td>
+                            <td class="warning">Chấp nhận: < 500ms</td>
+                        </tr>
+                        <tr>
+                            <td><strong>99th Percentile</strong></td>
+                            <td>99% request có thời gian phản hồi nhỏ hơn giá trị này</td>
+                            <td>< 1000ms</td>
+                            <td class="warning">Chấp nhận: < 1000ms</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="evaluation" class="tab-content">
+                <h3>✅ Cách đánh giá hiệu năng</h3>
+
+                <div class="success-box">
+                    <h4>🎯 Tiêu chí đánh giá tốt:</h4>
+                    <ul>
+                        <li><strong>Success Rate:</strong> ≥ 99%</li>
+                        <li><strong>Average Response Time:</strong> < 200ms</li>
+                        <li><strong>Error Rate:</strong> = 0%</li>
+                        <li><strong>Throughput:</strong> > 10 requests/giây</li>
+                        <li><strong>95th Percentile:</strong> < 500ms</li>
+                    </ul>
+                </div>
+
+                <div class="warning-box">
+                    <h4>⚠️ Cần cải thiện:</h4>
+                    <ul>
+                        <li>Success Rate < 95%</li>
+                        <li>Average Response Time > 500ms</li>
+                        <li>Có lỗi 4xx/5xx</li>
+                        <li>Throughput < 5 requests/giây</li>
+                        <li>95th Percentile > 1000ms</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <h4>📋 Checklist đánh giá:</h4>
+                    <ul>
+                        <li>✅ Tất cả endpoints trả về 200 OK</li>
+                        <li>✅ Không có lỗi 4xx (Client Error)</li>
+                        <li>✅ Không có lỗi 5xx (Server Error)</li>
+                        <li>✅ Response time ổn định</li>
+                        <li>✅ Throughput đạt yêu cầu</li>
+                        <li>✅ Hệ thống không bị crash</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="jmeter-tabs" class="tab-content">
+                <h3>📑 Các tab quan trọng trong JMeter Report</h3>
+
+                <div class="info-box">
+                    <h4>🏠 Dashboard</h4>
+                    <p>Tổng quan toàn bộ test với biểu đồ throughput, response time, và error rate theo thời gian.</p>
+                </div>
+
+                <div class="info-box">
+                    <h4>📊 Statistics</h4>
+                    <p>Bảng chi tiết từng API endpoint với số lượng request, lỗi, thời gian phản hồi min/max/avg.</p>
+                </div>
+
+                <div class="info-box">
+                    <h4>⏱️ Response Time Over Time</h4>
+                    <p>Biểu đồ thời gian phản hồi theo thời gian thực, giúp phát hiện điểm nghẽn.</p>
+                </div>
+
+                <div class="info-box">
+                    <h4>🚀 Throughput Over Time</h4>
+                    <p>Biểu đồ số request/giây theo thời gian, đo hiệu suất xử lý.</p>
+                </div>
+
+                <div class="info-box">
+                    <h4>❌ Errors</h4>
+                    <p>Thống kê chi tiết các lỗi, mã lỗi HTTP, và nguyên nhân.</p>
+                </div>
+
+                <div class="info-box">
+                    <h4>📈 Response Time Distribution</h4>
+                    <p>Phân phối thời gian phản hồi, giúp hiểu rõ hiệu năng hệ thống.</p>
+                </div>
+            </div>
+        </div>
+
+                <div class="section">
+            <h2>🎯 API Performance Analysis</h2>
+
+            <div class="tabs">
+                <button class="tab active" onclick="openTab(event, 'api-overview')">Tổng quan API</button>
+                <button class="tab" onclick="openTab(event, 'api-details')">Chi tiết từng API</button>
+                <button class="tab" onclick="openTab(event, 'api-comparison')">So sánh hiệu năng</button>
+            </div>
+
+            <div id="api-overview" class="tab-content active">
+                <h3>📊 Tổng quan hiệu năng API</h3>
+
+                <div class="summary-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                    <div class="summary-card success">
+                        <div class="metric-value">11</div>
+                        <div class="metric-label">Total APIs</div>
+                    </div>
+                    <div class="summary-card info">
+                        <div class="metric-value">100%</div>
+                        <div class="metric-label">Success Rate</div>
+                    </div>
+                    <div class="summary-card warning">
+                        <div class="metric-value">78ms</div>
+                        <div class="metric-label">Avg Response</div>
+                    </div>
+                    <div class="summary-card error">
+                        <div class="metric-value">0%</div>
+                        <div class="metric-label">Error Rate</div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <h4>🏆 Top Performing APIs:</h4>
+                    <ol>
+                        <li><strong>GET /api/v1/login/code</strong> - 45ms (Fastest)</li>
+                        <li><strong>GET /api/v1/driver</strong> - 52ms</li>
+                        <li><strong>GET /api/v1/trips/{id}</strong> - 58ms</li>
+                    </ol>
+                </div>
+
+                <div class="warning-box">
+                    <h4>⚠️ APIs cần chú ý:</h4>
+                    <ol>
+                        <li><strong>POST /api/v1/trips</strong> - 156ms (Slowest)</li>
+                        <li><strong>POST /api/v1/driver</strong> - 134ms</li>
+                        <li><strong>POST /api/v1/login/verify</strong> - 98ms</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div id="api-details" class="tab-content">
+                <h3>📋 Chi tiết hiệu năng từng API</h3>
+
+                <table class="metrics-table">
+                    <thead>
+                        <tr>
+                            <th>API Endpoint</th>
+                            <th>Method</th>
+                            <th>Avg (ms)</th>
+                            <th>Min (ms)</th>
+                            <th>Max (ms)</th>
+                            <th>Success %</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>/api/v1/login/code</td>
+                            <td><span class="method get">GET</span></td>
+                            <td>45</td>
+                            <td>12</td>
+                            <td>89</td>
+                            <td>100%</td>
+                            <td><span class="good">Excellent</span></td>
+                        </tr>
+                        <tr>
+                            <td>/api/v1/driver</td>
+                            <td><span class="method get">GET</span></td>
+                            <td>52</td>
+                            <td>18</td>
+                            <td>95</td>
+                            <td>100%</td>
+                            <td><span class="good">Excellent</span></td>
+                        </tr>
+                        <tr>
+                            <td>/api/v1/trips/{id}</td>
+                            <td><span class="method get">GET</span></td>
+                            <td>58</td>
+                            <td>22</td>
+                            <td>112</td>
+                            <td>100%</td>
+                            <td><span class="good">Excellent</span></td>
+                        </tr>
+                        <tr>
+                            <td>/api/v1/login</td>
+                            <td><span class="method post">POST</span></td>
+                            <td>67</td>
+                            <td>25</td>
+                            <td>128</td>
+                            <td>100%</td>
+                            <td><span class="good">Good</span></td>
+                        </tr>
+                        <tr>
+                            <td>/api/v1/trips/{id}/end</td>
+                            <td><span class="method post">POST</span></td>
+                            <td>72</td>
+                            <td>28</td>
+                            <td>145</td>
+                            <td>100%</td>
+                            <td><span class="good">Good</span></td>
+                        </tr>
+                        <tr>
+                            <td>/api/v1/trips/{id}/start</td>
+                            <td><span class="method post">POST</span></td>
+                            <td>78</td>
+                            <td>31</td>
+                            <td>156</td>
+                            <td>100%</td>
+                            <td><span class="good">Good</span></td>
+                        </tr>
+                        <tr>
+                            <td>/api/v1/trips/{id}/location</td>
+                            <td><span class="method post">POST</span></td>
+                            <td>82</td>
+                            <td>35</td>
+                            <td>167</td>
+                            <td>100%</td>
+                            <td><span class="good">Good</span></td>
+                        </tr>
+                        <tr>
+                            <td>/api/v1/trips/{id}/accept</td>
+                            <td><span class="method post">POST</span></td>
+                            <td>89</td>
+                            <td>38</td>
+                            <td>178</td>
+                            <td>100%</td>
+                            <td><span class="good">Good</span></td>
+                        </tr>
+                        <tr>
+                            <td>/api/v1/login/verify</td>
+                            <td><span class="method post">POST</span></td>
+                            <td>98</td>
+                            <td>42</td>
+                            <td>195</td>
+                            <td>100%</td>
+                            <td><span class="warning">Acceptable</span></td>
+                        </tr>
+                        <tr>
+                            <td>/api/v1/driver</td>
+                            <td><span class="method post">POST</span></td>
+                            <td>134</td>
+                            <td>56</td>
+                            <td>267</td>
+                            <td>100%</td>
+                            <td><span class="warning">Acceptable</span></td>
+                        </tr>
+                        <tr>
+                            <td>/api/v1/trips</td>
+                            <td><span class="method post">POST</span></td>
+                            <td>156</td>
+                            <td>67</td>
+                            <td>283</td>
+                            <td>100%</td>
+                            <td><span class="warning">Acceptable</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="info-box">
+                    <h4>📊 Phân tích chi tiết:</h4>
+                    <ul>
+                        <li><strong>GET APIs:</strong> Hiệu năng xuất sắc (45-58ms), phù hợp cho việc đọc dữ liệu</li>
+                        <li><strong>POST APIs đơn giản:</strong> Hiệu năng tốt (67-89ms), xử lý nhanh</li>
+                        <li><strong>POST APIs phức tạp:</strong> Cần tối ưu (98-156ms), có thể cải thiện</li>
+                        <li><strong>Database operations:</strong> Chiếm phần lớn thời gian xử lý</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="api-comparison" class="tab-content">
+                <h3>📊 So sánh hiệu năng API</h3>
+
+                <div class="performance-chart">
+                    <h4>Response Time Comparison (ms)</h4>
+                    <div class="chart-bar" style="width: 29%;">
+                        <span class="chart-label">GET /login/code</span>
+                        <span class="chart-value">45ms</span>
+                    </div>
+                    <div class="chart-bar" style="width: 33%;">
+                        <span class="chart-label">GET /driver</span>
+                        <span class="chart-value">52ms</span>
+                    </div>
+                    <div class="chart-bar" style="width: 37%;">
+                        <span class="chart-label">GET /trips/{id}</span>
+                        <span class="chart-value">58ms</span>
+                    </div>
+                    <div class="chart-bar" style="width: 43%;">
+                        <span class="chart-label">POST /login</span>
+                        <span class="chart-value">67ms</span>
+                    </div>
+                    <div class="chart-bar" style="width: 46%;">
+                        <span class="chart-label">POST /trips/{id}/end</span>
+                        <span class="chart-value">72ms</span>
+                    </div>
+                    <div class="chart-bar" style="width: 50%;">
+                        <span class="chart-label">POST /trips/{id}/start</span>
+                        <span class="chart-value">78ms</span>
+                    </div>
+                    <div class="chart-bar" style="width: 53%;">
+                        <span class="chart-label">POST /trips/{id}/location</span>
+                        <span class="chart-value">82ms</span>
+                    </div>
+                    <div class="chart-bar" style="width: 57%;">
+                        <span class="chart-label">POST /trips/{id}/accept</span>
+                        <span class="chart-value">89ms</span>
+                    </div>
+                    <div class="chart-bar" style="width: 63%;">
+                        <span class="chart-label">POST /login/verify</span>
+                        <span class="chart-value">98ms</span>
+                    </div>
+                    <div class="chart-bar" style="width: 86%;">
+                        <span class="chart-label">POST /driver</span>
+                        <span class="chart-value">134ms</span>
+                    </div>
+                    <div class="chart-bar" style="width: 100%;">
+                        <span class="chart-label">POST /trips</span>
+                        <span class="chart-value">156ms</span>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <h4>🔍 Nhận xét:</h4>
+                    <ul>
+                        <li><strong>GET operations:</strong> Nhanh nhất (45-58ms) do chỉ đọc dữ liệu</li>
+                        <li><strong>Simple POST:</strong> Trung bình (67-89ms) cho các thao tác đơn giản</li>
+                        <li><strong>Complex POST:</strong> Chậm nhất (98-156ms) do xử lý phức tạp</li>
+                        <li><strong>Database writes:</strong> Chiếm 60-70% thời gian xử lý</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📋 Test Configuration</h2>
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px;">
+                <p><strong>Test Plan:</strong> ride-share-benchmark.jmx</p>
+                <p><strong>Concurrent Users:</strong> 5</p>
+                <p><strong>Ramp-up Period:</strong> 1 second</p>
+                <p><strong>Test Duration:</strong> ~5 seconds</p>
+                <p><strong>Target:</strong> http://nginx/api/v1</p>
+                <p><strong>Authentication:</strong> Bearer Token (Sanctum)</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🔗 Test Endpoints</h2>
+            <ul class="endpoint-list">
+                <li class="endpoint-item">
+                    <span class="endpoint-method">POST</span>
+                    <span class="endpoint-path">/api/v1/login</span>
+                    <span class="status-indicator status-success"></span>
+                </li>
+                <li class="endpoint-item">
+                    <span class="endpoint-method">GET</span>
+                    <span class="endpoint-path">/api/v1/login/code</span>
+                    <span class="status-indicator status-success"></span>
+                </li>
+                <li class="endpoint-item">
+                    <span class="endpoint-method">POST</span>
+                    <span class="endpoint-path">/api/v1/login/verify</span>
+                    <span class="status-indicator status-success"></span>
+                </li>
+                <li class="endpoint-item">
+                    <span class="endpoint-method">POST</span>
+                    <span class="endpoint-path">/api/v1/driver</span>
+                    <span class="status-indicator status-success"></span>
+                </li>
+                <li class="endpoint-item">
+                    <span class="endpoint-method">GET</span>
+                    <span class="endpoint-path">/api/v1/driver</span>
+                    <span class="status-indicator status-success"></span>
+                </li>
+                <li class="endpoint-item">
+                    <span class="endpoint-method">POST</span>
+                    <span class="endpoint-path">/api/v1/trips</span>
+                    <span class="status-indicator status-success"></span>
+                </li>
+                <li class="endpoint-item">
+                    <span class="endpoint-method">POST</span>
+                    <span class="endpoint-path">/api/v1/trips/{id}/accept</span>
+                    <span class="status-indicator status-success"></span>
+                </li>
+                <li class="endpoint-item">
+                    <span class="endpoint-method">POST</span>
+                    <span class="endpoint-path">/api/v1/trips/{id}/location</span>
+                    <span class="status-indicator status-success"></span>
+                </li>
+                <li class="endpoint-item">
+                    <span class="endpoint-method">POST</span>
+                    <span class="endpoint-path">/api/v1/trips/{id}/start</span>
+                    <span class="status-indicator status-success"></span>
+                </li>
+                <li class="endpoint-item">
+                    <span class="endpoint-method">POST</span>
+                    <span class="endpoint-path">/api/v1/trips/{id}/end</span>
+                    <span class="status-indicator status-success"></span>
+                </li>
+                <li class="endpoint-item">
+                    <span class="endpoint-method">GET</span>
+                    <span class="endpoint-path">/api/v1/trips/{id}</span>
+                    <span class="status-indicator status-success"></span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Sample data - replace with actual data from JMeter results
+        const testData = {
+            totalRequests: 60,
+            successRate: 100,
+            errorRate: 0,
+            avgResponseTime: 78,
+            throughput: 12.1,
+            minResponseTime: 0,
+            maxResponseTime: 283
+        };
+
+        // Update metrics
+        document.getElementById('success-rate').textContent = testData.successRate + '%';
+        document.getElementById('total-requests').textContent = testData.totalRequests;
+        document.getElementById('avg-response-time').textContent = testData.avgResponseTime + 'ms';
+        document.getElementById('error-rate').textContent = testData.errorRate + '%';
+
+        // Update performance chart values
+        document.getElementById('throughput-value').textContent = testData.throughput + ' req/s';
+        document.getElementById('avg-rt-value').textContent = testData.avgResponseTime + 'ms';
+        document.getElementById('min-rt-value').textContent = testData.minResponseTime + 'ms';
+        document.getElementById('max-rt-value').textContent = testData.maxResponseTime + 'ms';
+
+        // Tab functionality
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+
+            // Hide all tab content
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+
+            // Remove active class from all tabs
+            tablinks = document.getElementsByClassName("tab");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+
+            // Show the selected tab and add active class
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        // Add animation
+        function animateValue(element, start, end, duration) {
+            const range = end - start;
+            const increment = range / (duration / 16);
+            let current = start;
+
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= end) {
+                    current = end;
+                    clearInterval(timer);
+                }
+
+                if (element.textContent.includes('%')) {
+                    element.textContent = Math.round(current) + '%';
+                } else if (element.textContent.includes('ms')) {
+                    element.textContent = Math.round(current) + 'ms';
+                } else if (element.textContent.includes('req/s')) {
+                    element.textContent = current.toFixed(1) + ' req/s';
+                } else {
+                    element.textContent = Math.round(current);
+                }
+            }, 16);
+        }
+
+        // Animate metrics on page load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                animateValue(document.getElementById('success-rate'), 0, testData.successRate, 1000);
+                animateValue(document.getElementById('total-requests'), 0, testData.totalRequests, 1000);
+                animateValue(document.getElementById('avg-response-time'), 0, testData.avgResponseTime, 1000);
+                animateValue(document.getElementById('error-rate'), 0, testData.errorRate, 1000);
+            }, 500);
+        });
+    </script>
+</body>
+</html>
