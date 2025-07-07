@@ -12,9 +12,14 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('/code', [AuthController::class, 'getVerificationCode']);
     });
 
-    Route::middleware(['auth:sanctum'])->group(function () {
-        Route::get('/me', [AuthController::class, 'getMe']);
+    // SSO routes - Simple OAuth + SSO
+    Route::group(['prefix' => 'sso'], function () {
+        // Specific authentication methods
+        Route::post('/phone', [AuthController::class, 'authenticateWithPhone'])->name('sso.phone');
+        Route::post('/google', [AuthController::class, 'authenticateWithGoogle'])->name('sso.google');
+    });
 
+    Route::middleware(['auth:sanctum'])->group(function () {
         Route::group(['prefix' => 'driver'], function () {
             Route::get('/', [DriverController::class, 'show']);
             Route::post('/', [DriverController::class, 'store']);
