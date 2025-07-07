@@ -13,25 +13,14 @@ app/Patterns/
 │       ├── UserManager.php           # Demo class
 │       └── README.md                 # Documentation
 ├── Facade/
-│   ├── TripBookingFacade.php         # Facade cho đặt chuyến đi
-│   ├── Services/                     # Các service classes
-│   │   ├── UserService.php
-│   │   ├── PaymentService.php
-│   │   ├── DriverService.php
-│   │   ├── NotificationService.php
-│   │   └── TripService.php
-│   └── README.md                     # Documentation
-└── ThreadPool/
-    ├── ThreadPool.php                # Thread Pool implementation
-    ├── Tasks/                        # Các task classes
-    │   ├── EmailNotificationTask.php
-    │   ├── PaymentProcessingTask.php
-    │   ├── LocationUpdateTask.php
-    │   ├── FareCalculationTask.php
-    │   ├── PushNotificationTask.php
-    │   └── DataBackupTask.php
-    ├── ThreadPoolManager.php         # Demo class
-    └── README.md                     # Documentation
+│   ├── TripBookingFacade.php
+│   └── Services/                     # Các service classes
+│       ├── UserService.php
+│       ├── PaymentService.php
+│       ├── DriverService.php
+│       ├── NotificationService.php
+│       └── TripService.php
+└── README.md                         # Documentation
 ```
 
 ## 🎯 Các Patterns đã implement
@@ -77,26 +66,6 @@ php artisan demo:facade --action=track --trip-id=1
 php artisan demo:facade --action=rate --trip-id=1 --user-id=1 --rating=5
 ```
 
-### 3. Thread Pool Pattern
-**Mục đích**: Quản lý pool các worker threads để xử lý tác vụ bất đồng bộ.
-
-**Ví dụ**: Xử lý đồng thời các tác vụ:
-- Gửi email thông báo
-- Xử lý thanh toán
-- Cập nhật vị trí tài xế
-- Tính toán cước phí
-- Gửi push notification
-- Backup dữ liệu
-
-**Chạy demo**:
-```bash
-php artisan demo:thread-pool --type=basic --workers=3
-php artisan demo:thread-pool --type=concurrent --workers=5
-php artisan demo:thread-pool --type=error --workers=2
-php artisan demo:thread-pool --type=real-world --workers=4
-php artisan demo:thread-pool --type=performance
-```
-
 ## 🚀 Cách sử dụng
 
 ### 1. Chạy tất cả demos
@@ -106,9 +75,6 @@ php artisan demo:user-decorator
 
 # Facade Pattern
 php artisan demo:facade
-
-# Thread Pool Pattern
-php artisan demo:thread-pool
 ```
 
 ### 2. Sử dụng trong code
@@ -123,11 +89,6 @@ $premiumDriver = new PremiumDecorator($driver);
 use App\Patterns\Facade\TripBookingFacade;
 $facade = new TripBookingFacade();
 $result = $facade->bookTrip($bookingData);
-
-// Thread Pool Pattern
-use App\Patterns\ThreadPool\ThreadPoolManager;
-$manager = new ThreadPoolManager(5);
-$manager->demonstrateRealWorldWorkload();
 ```
 
 ## 📊 So sánh các Patterns
@@ -136,7 +97,6 @@ $manager->demonstrateRealWorldWorkload();
 |---------|----------|---------|------------|----------|
 | **Decorator** | Thêm chức năng linh hoạt | Linh hoạt, mở rộng dễ | Có thể phức tạp với nhiều decorator | User roles, logging, caching |
 | **Facade** | Đơn giản hóa interface | Dễ sử dụng, giảm coupling | Có thể tạo dependency | API endpoints, service layers |
-| **Thread Pool** | Xử lý tác vụ bất đồng bộ | Hiệu suất cao, kiểm soát tài nguyên | Phức tạp, khó debug | Background jobs, async processing |
 
 ## 🎯 Ứng dụng thực tế trong Ride-Share
 
@@ -149,11 +109,6 @@ $manager->demonstrateRealWorldWorkload();
 - **API Controllers**: Đơn giản hóa việc gọi nhiều services
 - **Service Integration**: Tích hợp payment, notification, location services
 - **Client SDK**: Cung cấp interface đơn giản cho mobile app
-
-### Thread Pool Pattern
-- **Background Jobs**: Xử lý email, notification, payment
-- **Real-time Updates**: Cập nhật vị trí tài xế, tracking
-- **Data Processing**: Backup, analytics, reporting
 
 ## 🔧 Cài đặt và chạy
 
@@ -173,7 +128,6 @@ composer install
 # Tất cả patterns
 php artisan demo:user-decorator
 php artisan demo:facade
-php artisan demo:thread-pool
 ```
 
 ## 📚 Tài liệu tham khảo
